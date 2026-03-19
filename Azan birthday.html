@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azan Birthday</title>
+<style>
+body{margin:0;font-family:Poppins,Arial;background:linear-gradient(135deg,#ff7eb3,#ff758c,#ffb347);color:#fff;text-align:center;overflow-x:hidden}
+button{padding:18px 35px;font-size:22px;border:none;border-radius:40px;background:#fff;color:#ff4d6d;cursor:pointer;margin:10px;transition:0.3s;font-weight:bold;box-shadow:0 10px 20px rgba(0,0,0,0.2)}
+button:hover{transform:scale(1.15) rotate(2deg)}
+#start{height:100vh;display:flex;justify-content:center;align-items:center;flex-direction:column;animation:pop 1s ease}
+@keyframes pop{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
+#start h1{font-size:55px;margin-bottom:10px;animation:float 2s infinite alternate}
+@keyframes float{from{transform:translateY(0)}to{transform:translateY(-10px)}}
+#content{display:none;padding:20px;animation:fade 1s ease}
+#gameSection{display:none}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+h1{font-size:42px}
+p{max-width:600px;margin:auto;font-size:18px}
+.gallery img{width:240px;height:240px;object-fit:cover;margin:10px;border-radius:20px;transition:0.3s}
+.gallery img:hover{transform:scale(1.1) rotate(3deg)}
+.gallery img:hover{transform:scale(1.1) rotate(3deg)}
+canvas{background:#111;margin-top:20px;border-radius:10px}
+.confetti{position:fixed;width:10px;height:10px;top:-10px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(100vh)}}
+</style>
+</head>
+<body>
+<div id="start">
+<h1>🎉 AZAN'S BIRTHDAY 🎉</h1>
+<button onclick="start()">please click here</button>
+</div>
+<div id="content">
+<h1>Happy Birthday Azan 🎂🔥</h1>
+<p>You are such a kind and funny person. You always make people happy and everyone loves being around you. We hope you have an amazing birthday full of fun and happiness!</p>
+<div class="gallery">
+<img src="Azan1.png">
+<img src="Azan 2.png">
+<img src="Azan 3.png">
+</div>
+<button onclick="showGame()">Play Game 🎮</button>
+<div id="gameSection">
+<h2>Mini Game</h2>
+<div id="score">Score: 0</div>
+<canvas id="game" width="300" height="400"></canvas>
+</div>
+</div>
+<audio id="music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
+<script>
+function start(){document.getElementById('start').style.display='none';document.getElementById('content').style.display='block';confettiBurst();document.getElementById('music').play()}
+function showGame(){document.getElementById('gameSection').style.display='block';startGame()}
+function confettiBurst(){for(let i=0;i<80;i++){let c=document.createElement('div');c.className='confetti';c.style.left=Math.random()*100+'vw';c.style.background=`hsl(${Math.random()*360},100%,50%)`;c.style.animationDuration=(Math.random()*2+2)+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),4000)}}
+let c=document.getElementById('game');
+let ctx=c.getContext('2d');
+let player,obstacles,score,speed,gameRunning=false;
+let lanes=[50,140,230];
+let currentLane=1;
+function startGame(){player={x:lanes[currentLane],y:350,w:30,h:30};obstacles=[];score=0;speed=6;gameRunning=true;loop()}
+function spawn(){if(gameRunning){let lane=Math.floor(Math.random()*3);obstacles.push({x:lanes[lane],y:-30,w:30,h:30})}}
+function loop(){if(!gameRunning)return;ctx.clearRect(0,0,300,400);
+ctx.fillStyle='#00ffcc';ctx.fillRect(player.x,player.y,player.w,player.h);
+ctx.fillStyle='#ff4444';
+for(let i=0;i<obstacles.length;i++){let o=obstacles[i];o.y+=speed;ctx.fillRect(o.x,o.y,o.w,o.h);
+if(o.y>400){obstacles.splice(i,1);score++;document.getElementById('score').innerText='Score: '+score}
+if(player.x===o.x&&player.y<o.y+o.h&&player.y+player.h>o.y){gameRunning=false;alert('Azan Wins Energy Over! Score: '+score)}}
+requestAnimationFrame(loop)}
+setInterval(spawn,700);
+document.addEventListener('keydown',e=>{if(!gameRunning)return;if(e.key==='ArrowLeft'&&currentLane>0){currentLane--;player.x=lanes[currentLane]}if(e.key==='ArrowRight'&&currentLane<2){currentLane++;player.x=lanes[currentLane]}});
+</script>
+</body>
+</html>
